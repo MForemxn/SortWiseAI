@@ -6,26 +6,25 @@ import LoadingBar from 'react-top-loading-bar';
 const UploadPage: React.FC = () => {
     const [file, setFile] = useState<File | null>(null);
     const [location, setLocation] = useState<string>('');
-    const [apiKey, setApiKey] = useState<string>('');  // State to store the API key
+    const [apiKey, setApiKey] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [progress, setProgress] = useState(0);
     const [error, setError] = useState<string>('');
     const navigate = useNavigate();
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-            setFile(event.target.files[0]);
-            setError('');
+        const files = event.target.files;
+        if (files && files[0]) {
+            setFile(files[0]);
         }
     };
 
     const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setApiKey(event.target.value);  // Update API key from user input
+        setApiKey(event.target.value);
     };
 
     const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLocation(event.target.value);
-        setError('');
     };
 
     const handleSubmit = async () => {
@@ -40,9 +39,9 @@ const UploadPage: React.FC = () => {
             const formData = new FormData();
             formData.append('file', file);
 
-            // Assume you have a server endpoint that handles the file upload and returns a URL
-            const uploadResponse = await axios.post('https://your-server.com/upload', formData);
-            const imageUrl = uploadResponse.data.url; // This URL is used in the OpenAI API request
+            const uploadResponse = await axios.post('http://localhost:3001/upload', formData);
+            const imageUrl = uploadResponse.data.url;
+            setProgress(50);
 
             const response = await axios.post('https://api.openai.com/v1/chat/completions', {
                 model: "gpt-4-turbo",
@@ -50,7 +49,7 @@ const UploadPage: React.FC = () => {
                     {
                         "role": "user",
                         "content": [
-                            {"type": "text", "text": `What’s in this image? Describe considering the context: ${location}`},
+                            {"type": "text", "text": `What’s in this image located at ${location}?`},
                             {"type": "image_url", "image_url": {"url": imageUrl}}
                         ]
                     }
@@ -78,11 +77,7 @@ const UploadPage: React.FC = () => {
     if (isLoading) {
         return (
             <div className="loading-container">
-                <LoadingBar
-                    color='#f11946'
-                    progress={progress}
-                    onLoaderFinished={() => setProgress(0)}
-                />
+                <LoadingBar color='#f11946' progress={progress} onLoaderFinished={() => setProgress(0)} />
                 <p>Making Magic Happen...</p>
             </div>
         );
