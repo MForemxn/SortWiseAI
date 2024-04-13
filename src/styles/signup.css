@@ -16,7 +16,7 @@ body, html {
 
 /* Add global padding for all contents */
 body {
-    padding: 0 35%; /* Adds 20px padding to the left and right of the body */
+    padding: 0 20px; /* Adds 20px padding to the left and right of the body */
 }
 
 /* Header and navigation styles */

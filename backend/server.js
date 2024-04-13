@@ -10,6 +10,10 @@ require('dotenv').config();
 app.use(express.json());
 const upload = multer({ dest: 'uploads/' });
 
+const cors = require('cors');
+app.use(cors());
+
+
 // Routes
 app.post('/upload', upload.single('image'), async (req, res) => {
     try {
@@ -47,3 +51,4 @@ async function getRecyclingInfo(description, location) {
     });
     return response.data.result;
 }
+
