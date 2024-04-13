@@ -1,0 +1,101 @@
+/* General body styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+/* Universal padding and margin for all elements */
+* {
+    box-sizing: border-box;
+}
+
+/* Link styling */
+a {
+    color: #0652DD;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* General layout for nav and main content */
+header {
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+main {
+    padding-top: 80px; /* Give space for fixed header */
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* HomePage specific styles */
+.home-hero {
+    text-align: center;
+    padding: 50px 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* UploadPage specific styles */
+.upload-container {
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    margin: 20px auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+input[type="file"] {
+    margin-top: 20px;
+}
+
+.file-info {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+}
+@media (max-width: 768px) {
+    .container, .home-hero, .upload-container {
+        width: 95%;
+        margin: 10px auto;
+    }
+
+    nav ul {
+        flex-direction: column;
+        height: auto;
+    }
+
+    nav ul li {
+        margin: 10px;
+    }
+}
