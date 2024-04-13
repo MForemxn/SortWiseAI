@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import LoadingBar from 'react-top-loading-bar';
-import '../styles/global.css';
 
 const UploadPage: React.FC = () => {
     const [file, setFile] = useState<File | null>(null);
@@ -12,42 +12,71 @@ const UploadPage: React.FC = () => {
     const navigate = useNavigate();
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
+        if (event.target.files && event.target.files[0]) {
             setFile(event.target.files[0]);
-            setError('');  // Clear any previous error
+            setError('');
         }
     };
 
     const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLocation(event.target.value);
-        setError('');  // Clear any previous error
+        setError('');
+    };
+
+    const encodeImageFileAsURL = (file: File) => {
+        return new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                resolve(reader.result as string);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     };
 
     const handleSubmit = async () => {
         if (!file || !location) {
-            setError('Please provide both a file and a location.');
+            setError('Please provide both an image and location information.');
             return;
         }
-        setIsLoading(true);
-        setProgress(10); // Start progress at 10%
 
-        // Simulate API call delay and response
-        setTimeout(() => {
-            setProgress(50); // Midway through loading, update progress
-            setTimeout(() => {
-                // Simulated positive response for debugging
-                const simulatedResponse = {
-                    data: {
-                        message: "File successfully uploaded. Here's a placeholder response."
+        setIsLoading(true);
+        setProgress(10);
+
+        try {
+            const base64Image = await encodeImageFileAsURL(file);
+            setProgress(30);
+
+            const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+                model: "gpt-4-turbo",
+                messages: [
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": `What’s in this image? Describe considering the context: ${location}`},
+                            {"type": "image_url", "image_url": {"url": base64Image}}
+                        ]
                     }
-                };
-                setProgress(100); // Complete the loading bar
-                setTimeout(() => {
-                    navigate('/results', { state: { file, location, response: simulatedResponse.data.message } });
-                    setProgress(0); // Reset progress for next time page is loaded
-                }, 500); // Short delay to see complete bar before navigating
-            }, 1500); // Second part of the simulated delay
-        }, 500); // Initial simulated delay
+                ],
+                max_tokens: 300
+            }, {
+                headers: {
+                    'Authorization': `Bearer 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`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            setProgress(100);
+            setTimeout(() => {
+                navigate('/results', { state: { image: file, location, response: response.data.choices[0].message.content[0].text } });
+                setProgress(0);
+            }, 500);
+        } catch (error) {
+            console.error('Failed to process the image with OpenAI:', error);
+            setError('Failed to process the image. Please try again.');
+            setIsLoading(false);
+            setProgress(0);
+        }
     };
 
     if (isLoading) {
@@ -65,7 +94,7 @@ const UploadPage: React.FC = () => {
 
     return (
         <div className="upload-container">
-            <h1>Upload an item for recycling information</h1>
+            <h1>Upload an image for analysis</h1>
             {error && <p className="error">{error}</p>}
             <input type="file" onChange={handleFileChange} />
             <input type="text" value={location} onChange={handleLocationChange} placeholder="Enter your location" />
