@@ -1,18 +1,32 @@
-// src/components/Navbar.tsx
+// src/App.tsx
 import React from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/global.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './HomePage';
+import Navbar from './Navbar';
+import UploadPage from './UploadPage';
+import ResultsPage from './ResultsPage';
+import LearnMore from './LearnMore';
+import GetInvolved from "./GetInvolved";
+import SignupPage from "./SignupPage";
+import LogoutPage from "./LogoutPage";
 
-const Navigation: React.FC = () => {
+const App: React.FC = () => {
     return (
-        <nav>
-            <ul style={{ listStyleType: 'none', display: 'flex', justifyContent: 'space-evenly' }}>
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/signup">Signup/Login</Link></li>
-                <li><Link to="/upload">Upload</Link></li>
-            </ul>
-        </nav>
+        <Router>
+            <div>
+                <Navbar />
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/upload" element={<UploadPage />} />
+                    <Route path="/results" element={<ResultsPage />} />
+                    <Route path="/logout" element={<LogoutPage />} />
+                    <Route path="/learn-more" element={<LearnMore />} />
+                    <Route path="/get-involved" element={<GetInvolved />} />
+                    <Route path="/sign-up" element={<SignupPage />} />
+                </Routes>
+            </div>
+        </Router>
     );
 };
 
-export default Navigation;
+export default App;

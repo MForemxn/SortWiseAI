@@ -1,25 +1,30 @@
-// src/components/HomePage.tsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../styles/global.css'
 
-const HomePage: React.FC = () => {
-    const navigate = useNavigate();
-
-    const handleGetStartedClick = () => {
-        // Redirect user to the Signup page
-        navigate('/signup');
-    };
-
+const HomeScreen = () => {
     return (
         <div className="home-container">
-            <h1>Welcome to Our Application!</h1>
-            <p>Discover the features and enhancements we offer.</p>
-            <button onClick={handleGetStartedClick} className="get-started-btn">
-                Get Started
-            </button>
+            <header className="home-header">
+                <h1>Welcome to Sort Wise AI</h1>
+                <p>Join our journey towards a sustainable future.</p>
+            </header>
+            <div className="main-content">
+                <Link to="/learn-more">
+                    <button className="action-button">Learn More</button>
+                </Link>
+                <Link to="/get-involved">
+                    <button className="action-button">Get Involved</button>
+                </Link>
+                <Link to="/signup">
+                    <button className="action-button">Get Started</button>
+                </Link>
+            </div>
+            <footer className="home-footer">
+                <p>© 2024 Sort Wise AI. All rights reserved.</p>
+            </footer>
         </div>
     );
 };
 
-export default HomePage;
+export default HomeScreen;
