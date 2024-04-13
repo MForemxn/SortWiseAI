@@ -28,8 +28,8 @@ const UploadPage: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        if (!file || !location || !apiKey) {
-            setError('Please provide an image, location, and your OpenAI API key.');
+        if (!file || !location) {
+            setError('Please provide an image and location.');
             return;
         }
         setIsLoading(true);
@@ -39,7 +39,7 @@ const UploadPage: React.FC = () => {
             const formData = new FormData();
             formData.append('file', file);
 
-            const uploadResponse = await axios.post('http://localhost:3001/upload', formData);
+            const uploadResponse = await axios.post(`${process.env.REACT_APP_API_URL}`, formData);
             const imageUrl = uploadResponse.data.url;
             setProgress(50);
 
@@ -57,7 +57,7 @@ const UploadPage: React.FC = () => {
                 max_tokens: 300
             }, {
                 headers: {
-                    'Authorization': `Bearer ${apiKey}`
+                    'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
                 }
             });
 
@@ -74,10 +74,11 @@ const UploadPage: React.FC = () => {
         }
     };
 
+
     if (isLoading) {
         return (
             <div className="loading-container">
-                <LoadingBar color='#f11946' progress={progress} onLoaderFinished={() => setProgress(0)} />
+                <LoadingBar color='#f11946' progress={progress} onLoaderFinished={() => setProgress(0)}/>
                 <p>Making Magic Happen...</p>
             </div>
         );
@@ -94,5 +95,6 @@ const UploadPage: React.FC = () => {
         </div>
     );
 };
+
 
 export default UploadPage;
